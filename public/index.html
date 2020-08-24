@@ -129,8 +129,7 @@
               url: '/weather_location_data',
               data: {lat: mapsMouseEvent.latLng.lat(), lng: mapsMouseEvent.latLng.lng()}
           })
-          .then(response => {
-              console.log(response)
+          .then(response => {              
               let cityValue = response.name;
               let countryValue = response.sys.country;
               let tempValue = response.main.temp
@@ -142,10 +141,7 @@
               let latitude = response.coord.lat
               let longitude = response.coord.lon
               let windSpeed = response.wind.speed
-
-              console.log(response.dt)
-              console.log(new Date())
-
+              
               $('#location').text(`${cityValue}, ${countryValue}`)
               $('#weather-desc').text(descValue.toUpperCase());
               $('#weather-icon').attr('src', iconurl)
@@ -176,9 +172,7 @@
           var today = new Date();
           var h = today.getHours();
           var m = today.getMinutes();
-          var s = today.getSeconds();
-
-          console.log(h)
+          var s = today.getSeconds();          
 
           m = checkTime(m);
           s = checkTime(s);

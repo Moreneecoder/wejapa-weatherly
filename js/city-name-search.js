@@ -21,8 +21,7 @@ $(document).ready(function(){
             url: '/weather_location_data',
             data: {cityName: city}
         })
-        .then(response => {
-            console.log(response)
+        .then(response => {            
 
             if(response.cod == '404'){
                 $('#error-message').text("CITY NOT FOUND. PLEASE CROSSCHECK YOUR INPUT").show();
@@ -41,10 +40,7 @@ $(document).ready(function(){
             let cityTimeZone = parseInt(response.timezone)
             let latitude = response.coord.lat
             let longitude = response.coord.lon
-            let windSpeed = response.wind.speed
-
-            console.log(response.dt)
-            console.log(new Date())
+            let windSpeed = response.wind.speed       
 
             $('#location').text(`${cityValue}, ${countryValue}`)
             $('#weather-desc').text(descValue.toUpperCase());

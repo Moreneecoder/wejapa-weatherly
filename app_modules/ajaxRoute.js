@@ -14,8 +14,7 @@ module.exports = {
                 break;
         
             default:
-                htmlFile = 'notFound.html'
-                //console.log('not found')
+                htmlFile = 'notFound.html'                
                 break;
         }        
     
@@ -43,8 +42,7 @@ module.exports = {
             });
 
             response.on("end", () => {
-                body = JSON.parse(body);
-                console.log(body);
+                body = JSON.parse(body);                
               
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 //    response.write(JSON.stringify(body)); //write a response

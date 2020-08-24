@@ -14,8 +14,7 @@ module.exports = {
                 break;
         
             default:
-                htmlFile = 'notFound.html'
-                //console.log('not found')
+                htmlFile = 'notFound.html'                
                 break;
         }
     

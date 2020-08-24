@@ -8,7 +8,7 @@ const processXHR = require('./app_modules/processXHR');
 
 //create a server object:
 const server = http.createServer(function (req, res) {
-    console.log(req.url);
+    
     //  check if request is AJAX
     if(req.headers['x-requested-with'] === 'XMLHttpRequest'){        
 
