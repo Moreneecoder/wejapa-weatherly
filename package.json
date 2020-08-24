@@ -1,0 +1,15 @@
+{
+  "name": "wejapa_weather_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Bello Morenikeji Fuad",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "2.0.4"
+  }
+}

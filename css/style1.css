@@ -1,0 +1,21 @@
+body {
+    
+    height: 800px;
+    background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+    background-color: #cccccc;
+}
+
+#title-div{
+    margin-top: 3px;
+}
+
+#result-display{
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#map{
+    height:400px;
+    width: 100%;
+}

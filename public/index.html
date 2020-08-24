@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weatherly</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">    
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
+    <link href="../css/style1.css" rel="stylesheet" type="text/css" media="all" />    
+    
+</head>
+<body onload="startTime()" style="background-image: url('../images/1.jpg')">
+    
+    <div class="container-fluid">
+        <div id="title-div" class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 col-12 jumbotron p-3">
+           <h3 class="text-center m-0">WEATHERLY</h3>
+        </div>
+
+        <div id="error-message" style="display: none;" class="alert alert-danger text-center"></div>
+
+        
+            <div id="result-display" class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 col-12 card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-6">
+                            <h3 id="location" style="color:white"></h3>
+                            <h6 id="weather-desc" style="color:pink"></h6>
+                            <h6 style="color:white">Wind Speed: <span id="wind-speed" style="color:pink"></span></h6>
+                            <h4 id="temp" style="color:white"></h4>
+                        </div>
+
+                        <div class="col-sm-6 col-6">
+                            <span class="float-right">
+                                <center><img id="weather-icon" src="" width="100px" height="100px" alt="" class="img-responsive"></center>
+                                <h4 id="txt" style="color:pink" class="text-center"></h4>
+                                <h5 id="date-display" class="text-center" style="color:white"></h5>
+                            </span>                            
+                        </div>                        
+                    </div>                    
+
+                    <div class="row">
+                        <div class="col-sm-4 col-4"><h6 style="color:white">Lat: <br><span id="latitude" style="color:pink"></span></h6></div>
+                        <div class="col-sm-4 col-4"><h6 style="color:white">Long: <br><span id="longitude" style="color:pink"></span></h6></div>
+                        <div class="col-sm-4 col-4"><h6 style="color: white;"><span id="time-city"></span> <br><span style="color:pink" id="local-time"></span></h6></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 col-12 mt-3">                
+                
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a href="#search" class="nav-link active" data-toggle="tab">Via Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#map" class="nav-link" data-toggle="tab">Via Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <!--<a href="#forecast" class="nav-link" data-toggle="tab">Forecast</a>-->
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="search">
+                        
+                        <div class="row mt-3">
+                            <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 col-12">
+                                <form action="">
+                                    <div class="form-group text-center">
+                                        <input id="city-name" type="text" style="font-size: 1em" placeholder="ENTER CITY eg: Lagos, New York, Wuhan, Buenos Aires, Moscow" value="" class="form-control">
+                                        <button id="submit-btn" class="btn btn-primary btn-large mt-3">CHECK WEATHER</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="map">
+                        
+                        <div id="map"></div>
+                        
+                    </div>
+                    <div class="tab-pane fade" id="forecast">
+                        <p>Messages tab content ...</p>
+                    </div>
+                </div>
+                
+            </div>
+        
+    </div>
+
+
+    <script>
+        function initMap(){
+            let myLatlng = {lat:6.81, lng: 3.44}
+            //  Map options
+            let options = {
+                zoom:10,
+                center: myLatlng
+            }
+
+            //new Map
+            const map = new google.maps.Map(document.getElementById('map'), options);
+
+            //  Add marker
+            const marker = new google.maps.Marker({
+                position: myLatlng,
+                map:map
+            })
+
+            // Create the initial InfoWindow.
+        var infoWindow = new google.maps.InfoWindow(
+            {content: 'Click any city on the map to get weather reports!', position: myLatlng});
+        infoWindow.open(map);
+
+            // Configure the click listener.
+        map.addListener('click', function(mapsMouseEvent) {
+            $('#error-message').hide();
+          // Close the current InfoWindow.
+          infoWindow.close();
+
+          // Create a new InfoWindow.
+          /*infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
+          infoWindow.setContent(mapsMouseEvent.latLng.toString());
+          infoWindow.open(map);*/
+
+          $.ajax({
+              url: '/weather_location_data',
+              data: {lat: mapsMouseEvent.latLng.lat(), lng: mapsMouseEvent.latLng.lng()}
+          })
+          .then(response => {
+              console.log(response)
+              let cityValue = response.name;
+              let countryValue = response.sys.country;
+              let tempValue = response.main.temp
+              let descValue = response.weather[0].description
+              let iconCode = response.weather[0].icon
+              let iconurl = `http://openweathermap.org/img/w/${iconCode}.png`
+              let cityTimeStamp = parseInt(response.dt)
+              let cityTimeZone = parseInt(response.timezone)              
+              let latitude = response.coord.lat
+              let longitude = response.coord.lon
+              let windSpeed = response.wind.speed
+
+              console.log(response.dt)
+              console.log(new Date())
+
+              $('#location').text(`${cityValue}, ${countryValue}`)
+              $('#weather-desc').text(descValue.toUpperCase());
+              $('#weather-icon').attr('src', iconurl)
+              $('#temp').text(`${tempValue}°c`);
+              $('#latitude').text(latitude)
+              $('#longitude').text(longitude)
+              $('#wind-speed').text(`${windSpeed}km/h`)
+              $('#time-city').text(`${cityValue} Time`)
+              startLocalTime(cityTimeZone)
+              document.body.style.backgroundImage = `url(${getRandomImage()})`;
+              
+
+          })
+
+          
+        });
+        }
+        
+    </script>
+
+
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6evOXb0qX3G4qfpWKhm1W6JTQoVZ_7Xc&callback=initMap">
+    </script>
+
+    <script>
+        function startTime() {
+          var today = new Date();
+          var h = today.getHours();
+          var m = today.getMinutes();
+          var s = today.getSeconds();
+
+          console.log(h)
+
+          m = checkTime(m);
+          s = checkTime(s);
+          let timeType = 'PM';
+          if(h < 12){
+              timeType = 'AM';
+          }
+
+          document.getElementById('txt').innerHTML =
+          `${h}:${m}:${s} ${timeType}`;
+          var t = setTimeout(startTime, 500);
+        }
+
+        function startLocalTime(timezone) {           
+
+            d = new Date()
+            localTime = d.getTime()
+            localOffset = d.getTimezoneOffset() * 60000
+            utc = localTime + localOffset
+            var cityTimeStamp = utc + (1000 * timezone)
+            today = new Date(cityTimeStamp - 3600000)
+
+          var h = today.getHours();
+          var m = today.getMinutes();
+          var s = today.getSeconds();
+          m = checkTime(m);
+          s = checkTime(s);
+
+          let timeType = 'PM';
+          if(h < 12){
+              timeType = 'AM';
+          }
+
+          document.getElementById('local-time').innerHTML =
+          h + ":" + m + ":" + s + " " + timeType;
+            
+        }
+
+        function checkTime(i) {
+          if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+          return i;
+        }
+
+        function getRandomImage(){
+            let randNum = getRndInteger(1, 15)
+            let imgUrl = `../images/${randNum}.jpg`
+            return imgUrl
+        }
+
+        function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) ) + min;
+        }
+
+        const days = ['Monday', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+        var montharray = ["January","February","March","April","May","June","July","August","Sept","October","November","December"];
+
+        var today = new Date();    
+        var date = days[today.getDay()] + ', ' + montharray[(today.getMonth()+1)]+' '+today.getDate() + ', ' + today.getFullYear();
+        document.getElementById('date-display').innerHTML = date;
+    </script>
+
+    <script type="text/javascript" src="../js/jquery.min.js"></script>    
+    <script type="text/javascript" src="../js/map-search.js"></script>
+    <script type="text/javascript" src="../js/city-name-search.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
