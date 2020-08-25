@@ -25,11 +25,11 @@ module.exports = {
 
         if(dataType.lat){
             let latLng = dataType;
-            fetchUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latLng.lat}&lon=${latLng.lng}&units=metric&APPID=13a0fb6081e0c3aaca90a66489e0965c`;
+            fetchUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latLng.lat}&lon=${latLng.lng}&units=metric&APPID=${process.env.WEATHER_SECRET_KEY}`;
         }
 
         if(dataType.cityName){
-            fetchUrl = `https://api.openweathermap.org/data/2.5/weather?q=${dataType.cityName}&units=metric&APPID=13a0fb6081e0c3aaca90a66489e0965c`;
+            fetchUrl = `https://api.openweathermap.org/data/2.5/weather?q=${dataType.cityName}&units=metric&APPID=${process.env.WEATHER_SECRET_KEY}`;
         }        
         
         https.get(fetchUrl, response => {
