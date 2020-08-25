@@ -24,6 +24,6 @@ const server = http.createServer(function (req, res) {
 })
 
 
-server.listen(3000, function(){
+server.listen(process.env.PORT || 5000, function(){
     console.log("listening on port 3000"); //the server object listens on port 3000
    });
