@@ -193,7 +193,7 @@
             localOffset = d.getTimezoneOffset() * 60000
             utc = localTime + localOffset
             var cityTimeStamp = utc + (1000 * timezone)
-            today = new Date(cityTimeStamp - 3600000)
+            today = new Date((cityTimeStamp))
 
           var h = today.getHours();
           var m = today.getMinutes();
